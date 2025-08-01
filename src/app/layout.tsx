@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased px-4`}
+        className={`antialiased px-2`}
         style={{
           background:
             "linear-gradient(150deg, rgba(170, 169, 173, 0.5) 25%, rgba(255, 165, 0, 0.6) 100%)",

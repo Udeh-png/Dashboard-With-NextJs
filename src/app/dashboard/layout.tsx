@@ -1,3 +1,5 @@
+import Navbar from "@/components/Navbar";
+
 export default function RootLayout({
   children,
   profile,
@@ -17,8 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <div className="">
-      <header className="h-10">
-        <h1>Dashboard</h1>
+      <header className="mb-4">
+        <Navbar />
       </header>
       <main className="">
         <div className="grid grid-cols-[1fr_2fr_1fr] gap-1">

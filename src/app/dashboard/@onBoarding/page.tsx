@@ -71,8 +71,8 @@ export default function OnBoardingPage() {
 
           <div className="grid grid-cols-[3fr_2fr_1fr] h-10">
             <div className="bg-orange-400 rounded-xl"></div>
-            <div className="relative bg-black rounded-xl after:content-[''] after:absolute after:bottom-1/2 after:left-0 after:h-full after:border after:border-black"></div>
-            <div className="relative bg-gray rounded-xl after:content-[''] after:absolute after:bottom-1/2 after:left-0 after:h-full after:border after:border-gray"></div>
+            <div className="relative bg-black rounded-xl animate-after after:content-[''] after:absolute after:bottom-1/2 after:left-0 after:h-full after:border after:border-black"></div>
+            <div className="relative bg-gray rounded-xl animate-after after:content-[''] after:absolute after:bottom-1/2 after:left-0 after:h-full after:border after:border-gray"></div>
           </div>
         </div>
 

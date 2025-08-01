@@ -34,7 +34,9 @@ export default function CalendarPage() {
                 <div
                   key={index}
                   className={`${
-                    date.getDate() === today.getDate() ? "text-black" : ""
+                    date.getDate() === today.getDate()
+                      ? "text-[rgb(0,0,0)]"
+                      : ""
                   } relative`}
                 >
                   {date.toLocaleDateString("en-US", { weekday: "short" })}

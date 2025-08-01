@@ -67,7 +67,6 @@ export default function ProgressPage() {
           {data.map(({ dayOfTheWeek, workTimeInSeconds }, index) => {
             const isHighest = maxData === workTimeInSeconds;
             const top = 135 - percentages[index];
-            console.log(workTimeInSeconds);
 
             return (
               <div className="flex flex-col items-center relative" key={index}>

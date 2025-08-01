@@ -10,6 +10,7 @@
   --color-trans-white: rgba(255, 255, 255, 0.5);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-wavy: "Brush Script MT";
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,8 +32,21 @@ line {
   animation: drawLine 3s forwards;
 }
 
+.animate-after::after {
+  animation: raise-after 3s forwards;
+}
+
 @keyframes drawLine {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes raise-after {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(100%);
   }
 }

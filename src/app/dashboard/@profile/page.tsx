@@ -1,7 +1,10 @@
 import { Card } from "@/components/Card";
 import Image from "next/image";
+import { auth } from "../../../../auth";
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const session = await auth();
+  const userSession = session?.user;
   return (
     <Card className="overflow-hidden p-0! flex flex-col-reverse">
       <div
@@ -12,8 +15,8 @@ export default function ProfilePage() {
         }}
       >
         <div>
-          <p className="font-semibold">Lora Piterson</p>
-          <p className="text-[10px]">UI/UX Designer</p>
+          <p className="font-semibold">{userSession?.name}</p>
+          <p className="text-[10px]">Web Designer</p>
         </div>
         <div>
           <button className="text-sm border-[1.8px] px-4 py-[6px] rounded-full">
@@ -25,7 +28,7 @@ export default function ProfilePage() {
       <div className="h-full w-full">
         <Image
           fill
-          src="/profile-picture.jpg"
+          src={userSession?.image ? userSession?.image : "/"}
           alt="Profile Picture"
           className="object-cover"
         />
