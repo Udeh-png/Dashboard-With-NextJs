@@ -6,7 +6,7 @@ export default function RootLayout({
   progress,
   timeTracker,
   onBoarding,
-  pensionContribution,
+  perks,
   calender,
 }: Readonly<{
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export default function RootLayout({
   progress: React.ReactNode;
   timeTracker: React.ReactNode;
   onBoarding: React.ReactNode;
-  pensionContribution: React.ReactNode;
+  perks: React.ReactNode;
   calender: React.ReactNode;
 }>) {
   return (
@@ -26,7 +26,7 @@ export default function RootLayout({
         <div className="grid grid-cols-[1fr_2fr_1fr] gap-1">
           <div className="grid grid-rows-[1fr_1fr] gap-1">
             {profile}
-            {pensionContribution}
+            {perks}
           </div>
 
           <div className="grid grid-rows-[1fr_1fr] gap-1">

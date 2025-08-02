@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FaAngleDown } from "react-icons/fa6";
 import DottedLine from "@/components/DottedLine";
+import Image from "next/image";
 
 export const DropdownItem = ({
   title,
@@ -31,10 +32,24 @@ export const DropdownItem = ({
         />
       </div>
       <div
-        className={`h-0 w-full bg-red-500  transition-[height] duration-300 ${
+        className={`h-0 w-full transition-[height] duration-300 ${
           shouldOpen ? "h-15" : ""
         }`}
-      ></div>
+      >
+        <div
+          className={`grid grid-cols-[1fr_2.5fr] h-full transition-opacity duration-300 opacity-0 ${
+            shouldOpen ? "opacity-100" : ""
+          }`}
+        >
+          <div className="relative">
+            <Image src={"/laptop-picture.png"} fill alt="Laptop Pic" />
+          </div>
+          <div className="flex flex-col px-2 justify-center">
+            <p className="text-sm text-black">MacBook Air</p>
+            <p className="text-xs text-gray">Version M1</p>
+          </div>
+        </div>
+      </div>
       <DottedLine
         orientation="horizontal"
         className="absolute bottom-0 right-2 left-3"

@@ -4,7 +4,7 @@ import { Card } from "@/components/Card";
 import { DropdownItem } from "@/components/DropDownItem";
 import { useEffect, useRef, useState } from "react";
 
-export default function PensionContributionPage() {
+export default function PerksPage() {
   const [isClickedId, setIsClickedId] = useState<number | null>();
   const dropDownRef = useRef<HTMLDivElement>(null);
   const dropDownObjs = [
