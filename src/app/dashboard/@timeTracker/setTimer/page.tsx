@@ -1,7 +1,5 @@
-import { TimerData } from "@/@types/timerData";
 import { Card } from "@/components/Card";
 import ModNumberInput from "@/components/ModNumberInput";
-import { setLocalStorage } from "@/utils/setLocalStorage";
 import { redirect } from "next/navigation";
 
 export default function SetTimer() {
@@ -46,16 +44,9 @@ export default function SetTimer() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between w-full absolute bottom-0 right-0">
-          <button
-            className="rounded-2xl px-5 py-1 bg-orange-400 font-semibold"
-            type="reset"
-          >
-            Clear
-          </button>
-
+        <div className="flex items-center justify-end w-full absolute bottom-0 right-0">
           <input
-            className="rounded-2xl px-5 py-1 bg-orange-400 font-semibold"
+            className="rounded-2xl px-5 py-1 bg-black font-semibold text-white"
             type="submit"
             value={"Okay"}
           />

@@ -5,7 +5,7 @@ export default async function Navbar() {
   const session = await auth();
   const userSession = session?.user;
   return (
-    <form className="flex justify-between pt-2 h-full">
+    <form className="flex justify-between pt-2 h-full max-w-[1300px] mx-auto">
       <p
         className="text-4xl font-bold bg-clip-text"
         style={{
