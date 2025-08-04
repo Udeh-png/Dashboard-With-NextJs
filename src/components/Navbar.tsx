@@ -1,5 +1,6 @@
-import Image from "next/image";
-import { auth, signIn } from "../../auth";
+import { auth } from "../../auth";
+import { LoginButton } from "./NavbarComps";
+import { SessionProvider } from "next-auth/react";
 
 export default async function Navbar() {
   const session = await auth();
@@ -15,21 +16,16 @@ export default async function Navbar() {
           color: "transparent",
         }}
       >
-        Welcome, {userSession?.name?.slice(0, userSession.name.indexOf(" "))}
+        Welcome,{" "}
+        {userSession
+          ? userSession?.name?.slice(0, userSession.name.indexOf(" "))
+          : "Guest"}
       </p>
-      <button
-        className="border h-12 w-12 rounded-full relative overflow-clip"
-        formAction={async () => {
-          "use server";
-          await signIn("github");
-        }}
-      >
-        <Image
-          fill
-          src={userSession?.image ? userSession?.image : "/"}
-          alt="DP"
-        />
-      </button>
+      <div className="relative">
+        <SessionProvider>
+          <LoginButton />
+        </SessionProvider>
+      </div>
     </form>
   );
 }
