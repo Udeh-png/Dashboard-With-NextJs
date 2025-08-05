@@ -10,8 +10,6 @@ export const LoginButton = () => {
   const [hover, setHover] = useState<boolean | null>(false);
   const session = useSession();
   const userSession = session.data?.user;
-  let res;
-  console.log(res);
 
   return (
     <div

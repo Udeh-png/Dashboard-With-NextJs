@@ -3,11 +3,10 @@
 import { Card } from "@/components/Card";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import { CircularProgressBar } from "../../../components/CircularProgressBar";
-import { CgAlarm, CgArrowTopRight } from "react-icons/cg";
+import { CgAlarm } from "react-icons/cg";
 import { PiPauseThin, PiPlayThin } from "react-icons/pi";
 import RoundButton from "@/components/RoundButton";
 import Link from "next/link";
-import { getFromLocalStorage } from "@/utils/LocalStorageStuff";
 
 export default function TimerTrackerPage({
   searchParams,
@@ -15,10 +14,8 @@ export default function TimerTrackerPage({
   searchParams: Promise<{ ts: string }>;
 }) {
   const params = use(searchParams);
-  const secondsAtPause = Number(getFromLocalStorage("secondsAtPause"));
-  const totalSeconds = Number(params.ts) || secondsAtPause || 0;
+  const totalSeconds = Number(params.ts) || 0;
 
-  const MAX_PROGRESS = totalSeconds;
   const [totalSecondsState, setTotalSeconds] = useState(totalSeconds);
   const seconds = totalSecondsState % 60;
   const minutes = Math.floor(totalSecondsState / 60) % 60;
@@ -32,41 +29,34 @@ export default function TimerTrackerPage({
   const hrsToString = hours.toString().padStart(2, "0");
   let interval = useRef<NodeJS.Timeout | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  let elapsedTime = totalSecondsState;
+  let num = 0;
 
   function startTimer() {
     interval.current = setInterval(() => {
-      setTotalSeconds(elapsedTime > 0 ? (elapsedTime -= 1) : 0);
+      setTotalSeconds((totalSec) => {
+        return totalSec > 0 ? (totalSec -= 1) : 0;
+      });
 
       setProgress((progress) => {
-        if (progress >= MAX_PROGRESS) {
-          return MAX_PROGRESS;
+        if (progress >= totalSeconds) {
+          return totalSeconds;
         }
         return (progress += 1);
       });
-      if (elapsedTime === 0) {
-        clearInterval(interval.current!);
-        interval.current = null;
-      }
     }, 1000);
   }
 
   function handlePause() {
     if (!isPaused) {
       clearInterval(interval.current!);
-      setIsPaused((prev) => {
-        return !prev;
-      });
+      setIsPaused(true);
     }
   }
 
   function handleResume() {
     if (isPaused) {
       startTimer();
-      setIsPaused((prev) => {
-        return !prev;
-      });
+      setIsPaused(false);
     }
   }
   const pauseTimerCallback = useCallback(handlePause, [isPaused]);
@@ -79,6 +69,14 @@ export default function TimerTrackerPage({
       interval.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    num = totalSecondsState;
+    if (num === 0) {
+      clearInterval(interval.current!);
+      interval.current = null;
+    }
+  }, [totalSecondsState]);
   return (
     <Card>
       <div className="flex flex-col h-full">
@@ -90,7 +88,7 @@ export default function TimerTrackerPage({
         <div className="relative h-full">
           <CircularProgressBar
             progress={progress}
-            max={MAX_PROGRESS}
+            max={totalSeconds}
             title="Work Time Left"
             display={`${hrsToString} : ${minsToString} : ${secsToString}`}
           />
