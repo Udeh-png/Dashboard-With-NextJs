@@ -7,19 +7,37 @@ import { CgAlarm } from "react-icons/cg";
 import { PiPauseThin, PiPlayThin } from "react-icons/pi";
 import RoundButton from "@/components/RoundButton";
 import Link from "next/link";
+import millisToSec from "@/utils/MillisToSec";
+import {
+  clearLocalStorage,
+  getFromLocalStorage,
+  removeFromLocalStorage,
+  saveToLocalStorage,
+} from "@/utils/LocalStorageStuff";
+import { getCookie, removeCookie } from "@/utils/CookiesStuff";
 
 export default function TimerTrackerPage({
   searchParams,
 }: {
   searchParams: Promise<{ ts: string }>;
 }) {
-  const params = use(searchParams);
-  const totalSeconds = Number(params.ts) || 0;
+  const myCookies = getCookie("name");
+  const name = myCookies && myCookies[0];
+  const value = myCookies && myCookies[1];
 
-  const [totalSecondsState, setTotalSeconds] = useState(totalSeconds);
-  const seconds = totalSecondsState % 60;
-  const minutes = Math.floor(totalSecondsState / 60) % 60;
-  const hours = Math.floor(totalSecondsState / 3600);
+  if (value === "clear") {
+    clearLocalStorage();
+    removeCookie(name!);
+  }
+
+  const params = use(searchParams);
+  const [totalSeconds] = useState(
+    Number(getFromLocalStorage("totalSeconds")) || Number(params.ts) || 0
+  );
+  const [totalSecondsLeft, setSecondsLeft] = useState(totalSeconds);
+  const seconds = totalSecondsLeft % 60;
+  const minutes = Math.floor(totalSecondsLeft / 60) % 60;
+  const hours = Math.floor(totalSecondsLeft / 3600);
 
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -27,27 +45,43 @@ export default function TimerTrackerPage({
   const secsToString = seconds.toString().padStart(2, "0");
   const minsToString = minutes.toString().padStart(2, "0");
   const hrsToString = hours.toString().padStart(2, "0");
-  let interval = useRef<NodeJS.Timeout | null>(null);
+  const interval = useRef<NodeJS.Timeout | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  let num = 0;
+
+  let pauseTime = useRef<number>(0);
+  const resumeTime = useRef<number>(0);
+  const startTime = useRef<number | null>(null);
+  const totalPauseTime = useRef<number>(
+    Number(getFromLocalStorage("totalPauseTime") || 0)
+  );
 
   function startTimer() {
+    if (!startTime.current) {
+      startTime.current = Number(getFromLocalStorage("now")) || Date.now();
+    }
+    saveToLocalStorage("now", String(startTime.current));
+    saveToLocalStorage("totalSeconds", String(totalSeconds));
     interval.current = setInterval(() => {
-      setTotalSeconds((totalSec) => {
-        return totalSec > 0 ? (totalSec -= 1) : 0;
+      const now = Date.now();
+      const elapsedTime = millisToSec(now - startTime.current!);
+
+      setSecondsLeft((totalSec) => {
+        return totalSec > 0
+          ? totalPauseTime.current + (totalSeconds - elapsedTime)
+          : 0;
       });
 
       setProgress((progress) => {
-        if (progress >= totalSeconds) {
-          return totalSeconds;
-        }
-        return (progress += 1);
+        return progress >= totalSeconds
+          ? totalSeconds
+          : elapsedTime - totalPauseTime.current;
       });
-    }, 1000);
+    }, 1);
   }
 
   function handlePause() {
     if (!isPaused) {
+      pauseTime.current = Date.now();
       clearInterval(interval.current!);
       setIsPaused(true);
     }
@@ -55,12 +89,15 @@ export default function TimerTrackerPage({
 
   function handleResume() {
     if (isPaused) {
+      resumeTime.current = Date.now();
+      totalPauseTime.current += millisToSec(
+        resumeTime.current - pauseTime.current
+      );
+      saveToLocalStorage("totalPauseTime", totalPauseTime.current.toString());
       startTimer();
       setIsPaused(false);
     }
   }
-  const pauseTimerCallback = useCallback(handlePause, [isPaused]);
-  const resumeTimerCallback = useCallback(handleResume, [isPaused]);
 
   useEffect(() => {
     startTimer();
@@ -71,12 +108,15 @@ export default function TimerTrackerPage({
   }, []);
 
   useEffect(() => {
-    num = totalSecondsState;
+    const num = totalSecondsLeft;
     if (num === 0) {
       clearInterval(interval.current!);
       interval.current = null;
+      removeFromLocalStorage("now");
+      removeFromLocalStorage("totalPauseTime");
+      removeFromLocalStorage("totalSeconds");
     }
-  }, [totalSecondsState]);
+  }, [totalSecondsLeft]);
   return (
     <Card>
       <div className="flex flex-col h-full">
@@ -97,7 +137,7 @@ export default function TimerTrackerPage({
         <div className="grid h-full items-center grid-cols-[2fr_1fr] text-black">
           <div className="flex gap-1">
             <RoundButton
-              onClick={resumeTimerCallback}
+              onClick={handleResume}
               backgroundColor={isPaused ? "white" : "black"}
               ref={buttonRef}
             >
@@ -105,7 +145,7 @@ export default function TimerTrackerPage({
             </RoundButton>
 
             <RoundButton
-              onClick={pauseTimerCallback}
+              onClick={handlePause}
               backgroundColor={!isPaused ? "white" : "black"}
             >
               <PiPauseThin />

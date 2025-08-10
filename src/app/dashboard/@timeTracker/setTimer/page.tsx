@@ -1,22 +1,23 @@
 import { Card } from "@/components/Card";
 import ModNumberInput from "@/components/ModNumberInput";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default function SetTimer() {
+export default async function SetTimer() {
   return (
     <Card>
       <form
         className="h-full flex justify-center items-center relative"
         action={async (formData) => {
           "use server";
+          const cookiesStorage = await cookies();
           const hours = Number(formData.getAll("hours").join(""));
           const mins = Number(formData.getAll("mins").join(""));
           const secs = Number(formData.getAll("secs").join(""));
-
+          cookiesStorage.set("name", "clear");
           const hoursToSec = hours * 3600;
           const minsToSec = mins * 60;
           const totalSeconds = hoursToSec + minsToSec + secs;
-
           redirect(`/dashboard?ts=${totalSeconds}`);
         }}
       >
