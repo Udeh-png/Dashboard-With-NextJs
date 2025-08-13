@@ -43,7 +43,7 @@ export default function ProgressPage() {
 
   const maxData = Math.max(...data.map((item) => item.workTimeInSeconds));
   const percentages = data.map(
-    (value) => ((value.workTimeInSeconds - 3600) / (3600 * 4 - 3600)) * 100
+    (value) => (value.workTimeInSeconds / maxData) * 100 // ((value - oldMin) / (oldMax - oldMin) * (newMax - newMin)) + newMin
   );
 
   const totalWorkTimeInHrs = moddedRounder(totalWorkTimeInSec / 3600, 1);
@@ -66,15 +66,15 @@ export default function ProgressPage() {
         <div className="flex gap-4 justify-center relative">
           {data.map(({ dayOfTheWeek, workTimeInSeconds }, index) => {
             const isHighest = maxData === workTimeInSeconds;
-            const top = 135 - percentages[index];
+            const top = 110 - percentages[index];
 
             return (
               <div className="flex flex-col items-center relative" key={index}>
                 <LineOfGraph top={top} color={isHighest ? "orange" : "black"} />
                 {isHighest && (
                   <span
-                    className={`text-[11px] w-13 text-center py-[6px] bg-orange-400/70 text-black z-20 rounded-full absolute -left-[19px]`}
-                    style={{ top: `${top - 33}px` }}
+                    className={`text-[11px] w-[46px] text-center bg-orange-400/70 text-black z-20 rounded-full absolute -left-[4.5px] rotate-90`}
+                    style={{ top: `${top + 10}px` }}
                   >
                     {Math.floor(workTimeInSeconds / 3600)}h{" "}
                     {Math.floor(workTimeInSeconds / 60) % 60}m

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/Card";
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { CircularProgressBar } from "../../../components/CircularProgressBar";
 import { CgAlarm } from "react-icons/cg";
 import { PiPauseThin, PiPlayThin } from "react-icons/pi";
@@ -29,54 +29,52 @@ export default function TimerTrackerPage({
     clearLocalStorage();
     removeCookie(name!);
   }
-
   const params = use(searchParams);
-  const [totalSeconds] = useState(
-    Number(getFromLocalStorage("totalSeconds")) || Number(params.ts) || 0
-  );
-  const [totalSecondsLeft, setSecondsLeft] = useState(totalSeconds);
-  const seconds = totalSecondsLeft % 60;
-  const minutes = Math.floor(totalSecondsLeft / 60) % 60;
-  const hours = Math.floor(totalSecondsLeft / 3600);
 
+  const totalSecondsRef = useRef(Number(params.ts) || 0);
+  const interval = useRef<NodeJS.Timeout | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const pauseTime = useRef<number>(0);
+  const resumeTime = useRef<number>(0);
+  const startTime = useRef<number | null>(null);
+
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const seconds = secondsLeft! % 60;
+  const minutes = Math.floor(secondsLeft! / 60) % 60;
+  const hours = Math.floor(secondsLeft! / 3600);
+  const totalPauseTime = useRef<number>(
+    Number(getFromLocalStorage("totalPauseTime") || 0)
+  );
 
   const secsToString = seconds.toString().padStart(2, "0");
   const minsToString = minutes.toString().padStart(2, "0");
   const hrsToString = hours.toString().padStart(2, "0");
-  const interval = useRef<NodeJS.Timeout | null>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  let pauseTime = useRef<number>(0);
-  const resumeTime = useRef<number>(0);
-  const startTime = useRef<number | null>(null);
-  const totalPauseTime = useRef<number>(
-    Number(getFromLocalStorage("totalPauseTime") || 0)
-  );
 
   function startTimer() {
     if (!startTime.current) {
       startTime.current = Number(getFromLocalStorage("now")) || Date.now();
     }
     saveToLocalStorage("now", String(startTime.current));
-    saveToLocalStorage("totalSeconds", String(totalSeconds));
+    saveToLocalStorage("totalSeconds", String(totalSecondsRef.current));
     interval.current = setInterval(() => {
       const now = Date.now();
       const elapsedTime = millisToSec(now - startTime.current!);
 
       setSecondsLeft((totalSec) => {
-        return totalSec > 0
-          ? totalPauseTime.current + (totalSeconds - elapsedTime)
+        return totalSec! > 0
+          ? totalPauseTime.current + (totalSecondsRef.current - elapsedTime)
           : 0;
       });
 
       setProgress((progress) => {
-        return progress >= totalSeconds
-          ? totalSeconds
+        return progress >= totalSecondsRef.current
+          ? totalSecondsRef.current
           : elapsedTime - totalPauseTime.current;
       });
-    }, 1);
+    }, 100);
   }
 
   function handlePause() {
@@ -100,6 +98,10 @@ export default function TimerTrackerPage({
   }
 
   useEffect(() => {
+    if (Number(getFromLocalStorage("totalSeconds"))) {
+      totalSecondsRef.current = Number(getFromLocalStorage("totalSeconds"));
+    }
+    setSecondsLeft(totalSecondsRef.current);
     startTimer();
     return () => {
       clearInterval(interval.current!);
@@ -108,15 +110,14 @@ export default function TimerTrackerPage({
   }, []);
 
   useEffect(() => {
-    const num = totalSecondsLeft;
-    if (num === 0) {
+    if (secondsLeft === 0) {
       clearInterval(interval.current!);
       interval.current = null;
       removeFromLocalStorage("now");
       removeFromLocalStorage("totalPauseTime");
       removeFromLocalStorage("totalSeconds");
     }
-  }, [totalSecondsLeft]);
+  }, [secondsLeft]);
   return (
     <Card>
       <div className="flex flex-col h-full">
@@ -128,7 +129,7 @@ export default function TimerTrackerPage({
         <div className="relative h-full">
           <CircularProgressBar
             progress={progress}
-            max={totalSeconds}
+            max={totalSecondsRef.current}
             title="Work Time Left"
             display={`${hrsToString} : ${minsToString} : ${secsToString}`}
           />

@@ -9,7 +9,7 @@ export const LineOfGraph = ({
 }) => {
   return (
     <div className="w-fit h-full">
-      <svg className="" width={"14"} height={"155"}>
+      <svg className="" width={"10"} height={"155"}>
         <line
           stroke={color}
           strokeWidth={7}
@@ -17,9 +17,9 @@ export const LineOfGraph = ({
           strokeDashoffset={155}
           x1={"50%"}
           x2={"50%"}
-          y1={bottom > 135 ? 135 : bottom}
+          y1={bottom}
           strokeLinecap="round"
-          y2={top < 2 ? 4 : top}
+          y2={top}
         ></line>
         <circle
           r={3}
