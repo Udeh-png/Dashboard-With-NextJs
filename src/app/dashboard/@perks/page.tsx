@@ -22,13 +22,14 @@ export default function PerksPage() {
   useEffect(() => {
     const dropDown = dropDownRef.current;
 
-    const array = [...dropDown?.querySelectorAll("*")!];
-
-    document.addEventListener("click", (e) => {
-      if (!array?.includes(e.target as HTMLDivElement)) {
-        setIsClickedId(null);
-      }
-    });
+    if (dropDown) {
+      const array = [...dropDown.querySelectorAll("*")!];
+      document.addEventListener("click", (e) => {
+        if (!array?.includes(e.target as HTMLDivElement)) {
+          setIsClickedId(null);
+        }
+      });
+    }
   }, []);
   return (
     <Card>

@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 
-export default function RootLayout({
+export default function DashboardLayout({
   children,
   profile,
   progress,
@@ -39,6 +39,8 @@ export default function RootLayout({
 
           <div className="grid">{onBoarding}</div>
         </div>
+
+        <div>{children}</div>
       </main>
     </div>
   );

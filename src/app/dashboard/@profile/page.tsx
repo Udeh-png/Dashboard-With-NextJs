@@ -1,7 +1,7 @@
 import { Card } from "@/components/Card";
 import Image from "next/image";
 import { auth } from "../../../../auth";
-import { FaCircleUser, FaRegCircleUser } from "react-icons/fa6";
+import { FaRegCircleUser } from "react-icons/fa6";
 
 export default async function ProfilePage() {
   const session = await auth();

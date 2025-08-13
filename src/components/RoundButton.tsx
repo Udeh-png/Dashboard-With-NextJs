@@ -35,5 +35,5 @@ const RoundButton = forwardRef<
     );
   }
 );
-
+RoundButton.displayName = "RoundButton";
 export default RoundButton;

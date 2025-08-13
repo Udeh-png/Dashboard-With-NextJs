@@ -1,6 +1,6 @@
 import { Card } from "@/components/Card";
 import DottedLine from "@/components/DottedLine";
-import { FaCircleUser, FaRegCircleUser } from "react-icons/fa6";
+import { FaCircleUser } from "react-icons/fa6";
 
 export default function CalendarPage() {
   const today = new Date();

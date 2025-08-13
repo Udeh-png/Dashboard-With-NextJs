@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import { FaAngleDown } from "react-icons/fa6";
 import DottedLine from "@/components/DottedLine";
 import Image from "next/image";
