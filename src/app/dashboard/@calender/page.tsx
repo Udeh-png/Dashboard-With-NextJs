@@ -30,20 +30,17 @@ export default function CalendarPage() {
             {/* Day of the week container */}
             <div className=""></div>
             {days.map((date, index) => {
+              const isToday = date.getDate() === today.getDate();
               return (
                 <div
                   key={index}
-                  className={`${
-                    date.getDate() === today.getDate()
-                      ? "text-[rgb(0,0,0)]"
-                      : ""
-                  } relative`}
+                  className={`${isToday ? "text-[rgb(0,0,0)]" : ""} relative`}
                 >
                   {date.toLocaleDateString("en-US", { weekday: "short" })}
                   <br /> {date.getDate()}
                   <DottedLine
                     orientation="vertical"
-                    color="rgba(0,0,0,0.2)"
+                    color={isToday ? "black" : "rgba(0,0,0,0.2)"}
                     className="absolute top-[120%] left-1/2 -translate-x-[2px]"
                   />
                 </div>
