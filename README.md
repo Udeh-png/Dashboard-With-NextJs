@@ -38,5 +38,8 @@ Includes a worktime timer, mini taskmanager, and much more, all in a clean moder
   npm run start
   ```
 
+## 📸 Screenshots  
+![Dashboard Screenshot](./screenshots/dashboard-screenshot.jpeg) 
+
 ## ✍️ Author
 - [Udeh Chisom](https://github.com/Udeh-png)
